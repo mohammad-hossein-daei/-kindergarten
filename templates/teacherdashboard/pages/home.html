@@ -1,0 +1,30 @@
+<!-- در home.html -->
+<div class="cards">
+    <a href="{% url 'main:teacher_page' 'classes' %}" class="card-link">
+        <div class="card">
+            <h3>📚 کلاس‌های من</h3>
+            <p>لیست کلاس‌هایی که تدریس می‌کنید</p>
+        </div>
+    </a>
+    
+    <a href="{% url 'main:teacher_page' 'students' %}" class="card-link">
+        <div class="card">
+            <h3>👨‍🎓 دانش‌آموزان</h3>
+            <p>مدیریت دانش‌آموزان کلاس‌ها</p>
+        </div>
+    </a>
+    
+    <a href="{% url 'main:teacher_page' 'reports' %}" class="card-link">
+        <div class="card">
+            <h3>📊 گزارشات</h3>
+            <p>مشاهده گزارشات آموزشی</p>
+        </div>
+    </a>
+    
+    <a href="{% url 'main:teacher_page' 'schedule' %}" class="card-link">
+        <div class="card">
+            <h3>📅 برنامه هفتگی</h3>
+            <p>برنامه کلاس‌های هفته</p>
+        </div>
+    </a>
+</div>

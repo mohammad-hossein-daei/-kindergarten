@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+    <!-- نوار بالایی -->
+    {% include 'parentdashboard/partials/topbar.html' %}
+
+    <!-- بدنه اصلی -->
+    <div class="main-wrapper">
+        <!-- نوار کناری -->
+        {% include 'parentdashboard/partials/sidebar.html' %}
+        
+        <!-- محتوای اصلی -->
+        <main class="content">
+            {% block page_content %}
+                {% include page_template %}
+            {% endblock %}
+        </main>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // انتخابگر اکانت فرزند
+    const selectEl = document.getElementById('childAccountSelect');
+    if (selectEl) {
+        selectEl.addEventListener('change', function (e) {
+            const val = e.target.value;
+            const text = e.target.options[e.target.selectedIndex].text;
+            console.log(`حساب فرزند تغییر کرد: ${text} (کد: ${val})`);
+        });
+    }
+
+    // اعلانات
+    const notificationToggle = document.getElementById('notificationToggle');
+    const notificationPanel = document.getElementById('notificationPanel');
+
+    if (notificationToggle && notificationPanel) {
+        notificationToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            notificationPanel.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!notificationToggle.contains(e.target) && !notificationPanel.contains(e.target)) {
+                notificationPanel.classList.remove('active');
+            }
+        });
+
+        document.querySelector('.mark-all-read')?.addEventListener('click', function () {
+            document.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.classList.remove('unread');
+            });
+            const badge = document.getElementById('notificationBadge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function () {
+                this.classList.remove('unread');
+                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}

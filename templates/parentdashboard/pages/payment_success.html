@@ -1,0 +1,39 @@
+{% extends 'parentdashboard/dashboard.html' %}
+{% load static %}
+
+{% block page_content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <i class="fas fa-check-circle fa-4x mb-2"></i>
+                    <h3 class="mb-0">✅ ثبت نام با موفقیت انجام شد!</h3>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>نام کودک:</strong> {{ child.first_name }} {{ child.last_name }}</p>
+                            <p><strong>شماره پیگیری:</strong> {{ ref_id }}</p>
+                            <p><strong>مبلغ:</strong> {{ payment.amount }} تومان</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>تاریخ:</strong> {{ payment.date|date:"Y/m/d H:i" }}</p>
+                            <p><strong>وضعیت:</strong> <span class="badge bg-success">پرداخت شده</span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <a href="{% url 'main:dashboard_page' 'children' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>
+                        مشاهده لیست کودکان
+                    </a>
+                    <a href="{% url 'main:parentdashboard' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>
+                        بازگشت به داشبورد
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

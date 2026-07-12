@@ -1,0 +1,123 @@
+<!-- templates/teacherdashboard/pages/new_assignment.html -->
+{% load static %}
+
+<div style="margin-bottom: 1.5rem;">
+    <a href="/teacher/class-{{ class_obj.id }}/" style="color: var(--honey-medium); text-decoration: none; display: inline-block;">
+        <i class="fas fa-arrow-right"></i> بازگشت به کلاس {{ class_obj.name }}
+    </a>
+</div>
+
+<div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <h2 style="color: var(--honey-medium); margin-bottom: 0.5rem;">
+        <i class="fas fa-plus-circle"></i>
+        ارسال تمرین جدید
+    </h2>
+    <p style="color: var(--text-soft); margin-bottom: 2rem;">
+        کلاس: <strong>{{ class_obj.name }}</strong>
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div style="background: #f8d7da; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; color: #721c24;">
+                {% for error in form.non_field_errors %}
+                    <p style="margin: 0;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+            <!-- عنوان -->
+            <div>
+                <label style="display: block; color: var(--text-soft); font-weight: 500; margin-bottom: 0.3rem;">
+                    عنوان تمرین <span style="color: red;">*</span>
+                </label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+                        {% for error in form.title.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- توضیحات -->
+            <div>
+                <label style="display: block; color: var(--text-soft); font-weight: 500; margin-bottom: 0.3rem;">
+                    توضیحات
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+                        {% for error in form.description.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- فایل ضمیمه -->
+            <div>
+                <label style="display: block; color: var(--text-soft); font-weight: 500; margin-bottom: 0.3rem;">
+                    فایل ضمیمه (اختیاری)
+                </label>
+                {{ form.attachment }}
+                <small style="color: var(--text-soft); font-size: 0.8rem;">
+                    {{ form.attachment.help_text }}
+                </small>
+                {% if form.attachment.errors %}
+                    <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+                        {% for error in form.attachment.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- تاریخ ددلاین -->
+            <div>
+                <label style="display: block; color: var(--text-soft); font-weight: 500; margin-bottom: 0.3rem;">
+                    تاریخ ددلاین <span style="color: red;">*</span>
+                </label>
+                {{ form.due_date }}
+                <small style="color: var(--text-soft); font-size: 0.8rem;">
+                    {{ form.due_date.help_text }}
+                </small>
+                {% if form.due_date.errors %}
+                    <div style="color: red; font-size: 0.85rem; margin-top: 0.3rem;">
+                        {% for error in form.due_date.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" 
+                    style="background: var(--honey-gold); color: white; padding: 0.8rem 2rem; border: none; border-radius: 60px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                <i class="fas fa-save"></i> ارسال تمرین
+            </button>
+            <a href="/teacher/class-{{ class_obj.id }}/" 
+               style="background: #e0e0e0; color: var(--text-soft); padding: 0.8rem 2rem; border: none; border-radius: 60px; font-size: 1rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                انصراف
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-control:focus {
+        border-color: var(--honey-gold);
+        box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
+    }
+    button:hover {
+        background: var(--honey-dark) !important;
+        transform: scale(1.02);
+    }
+    a:hover {
+        background: #c0c0c0 !important;
+    }
+</style>

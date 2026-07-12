@@ -1,0 +1,23 @@
+<!-- فقط محتوای صفحه رو داشته باش، بدون ارث‌بری -->
+<div class="content-placeholder">
+    <i class="fas fa-paint-brush"></i>
+    <h3>🍯 محتوای اصلی اینجا قرار می‌گیرد</h3>
+    <p>صفحه‌ای که با کلیک روی هر آیتم منو، در این بخش نمایش داده می‌شود.</p>
+
+    <div class="dummy-buttons">
+        
+        <button onclick="window.location.href='{% url 'main:dashboard_page' page='register_child' %}'" 
+                class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> افزودن فرزند
+        </button>
+        <button class="btn btn-secondary"><i class="fas fa-edit"></i> ویرایش پروفایل</button>
+        <button class="btn btn-secondary"><i class="fas fa-file-invoice"></i> صورت‌حساب</button>
+        <button class="btn btn-secondary"><i class="fas fa-bell"></i> اعلان‌ها</button>
+        <button class="btn btn-secondary"><i class="fas fa-download"></i> گزارش ماهانه</button>
+    </div>
+
+    <p style="margin-top: 28px; font-size: 0.85rem; color: var(--honey-gold);">
+        <i class="fas fa-arrow-left" style="margin-left: 6px;"></i>
+        سمت راست: منوی کشویی • سمت چپ: محتوای پویا
+    </p>
+</div>

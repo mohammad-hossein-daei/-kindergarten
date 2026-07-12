@@ -1,0 +1,89 @@
+<!-- templates/teacherdashboard/pages/class_students.html -->
+{% load static %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <!-- ✅ لینک مستقیم به جای url -->
+    <a href="/teacher/classes/" style="color: var(--honey-medium); text-decoration: none; display: inline-block; margin-bottom: 0.5rem;">
+        <i class="fas fa-arrow-right"></i> بازگشت به کلاس‌ها
+    </a>
+    <h2 style="color: var(--honey-medium); margin: 0;">
+      <i class="fas fa-user-graduate"></i>
+      دانش‌آموزان کلاس {{ class_obj.name }}
+    </h2>
+    <p style="color: var(--text-soft); margin-top: 0.3rem;">
+      <i class="fas fa-user-tie"></i>
+      مربی: {{ class_obj.Employee.get_full_name|default:class_obj.Employee.email }}
+    </p>
+  </div>
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    <span style="background: var(--honey-cream); padding: 0.5rem 1rem; border-radius: 20px;">
+      <i class="fas fa-users"></i>
+      تعداد دانش‌آموزان: {{ students_count }}
+    </span>
+    <span style="background: var(--honey-cream); padding: 0.5rem 1rem; border-radius: 20px;">
+      <i class="fas fa-chair"></i>
+      ظرفیت: {{ class_obj.Capacity }}
+    </span>
+  </div>
+</div>
+
+{% if children %}
+  <div style="overflow-x: auto; background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead style="background: var(--honey-cream);">
+        <tr>
+          <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--honey-light);">#</th>
+          <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--honey-light);">نام</th>
+          <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--honey-light);">نام خانوادگی</th>
+          <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--honey-light);">تاریخ تولد</th>
+          <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--honey-light);">والدین</th>
+          <th style="padding: 1rem; text-align: center; border-bottom: 2px solid var(--honey-light);">عملیات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for child in children %}
+          <tr style="border-bottom: 1px solid var(--honey-light); transition: background 0.2s;">
+            <td style="padding: 1rem;">{{ forloop.counter }}</td>
+            <td style="padding: 1rem; font-weight: 500;">{{ child.first_name }}</td>
+            <td style="padding: 1rem; font-weight: 500;">{{ child.last_name }}</td>
+            <td style="padding: 1rem; color: var(--text-soft);">
+              {% if child.birth_date %}
+                {{ child.birth_date|date:'Y/m/d' }}
+              {% else %}
+                <span style="color: #999;">ثبت نشده</span>
+              {% endif %}
+            </td>
+            <td style="padding: 1rem; color: var(--text-soft);">{{ child.parent.get_full_name|default:child.parent.email }}</td>
+            <td style="padding: 1rem; text-align: center;">
+              <!-- ✅ لینک مستقیم به جای url -->
+            <a href="/teacher/student-{{ child.id }}/" style="background: var(--honey-gold); color: white; padding: 0.3rem 1rem; border-radius: 15px; text-decoration: none; font-size: 0.85rem; transition: all 0.3s ease; display: inline-block;">
+                <i class="fas fa-eye"></i> مشاهده
+            </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top: 1rem; text-align: left; color: var(--text-soft); font-size: 0.9rem;">
+    <i class="fas fa-info-circle"></i>
+    تعداد کل دانش‌آموزان: {{ students_count }} نفر
+  </div>
+{% else %}
+  <div style="text-align: center; padding: 3rem; background: var(--honey-cream); border-radius: 20px;">
+    <i class="fas fa-users" style="font-size: 3rem; color: var(--honey-light);"></i>
+    <p style="color: var(--text-soft); margin-top: 1rem; font-size: 1.2rem;">این کلاس هنوز دانش‌آموزی ندارد.</p>
+    <p style="color: var(--text-soft); font-size: 0.9rem;">پس از ثبت‌نام دانش‌آموزان، اطلاعات آنها در اینجا نمایش داده می‌شود.</p>
+  </div>
+{% endif %}
+
+<style>
+  tbody tr:hover {
+    background: var(--honey-cream);
+  }
+  .btn-view:hover {
+    background: var(--honey-dark) !important;
+  }
+</style>

@@ -1,0 +1,74 @@
+<!-- templates/teacherdashboard/pages/student_submissions.html -->
+{% load static %}
+
+<div style="margin-bottom: 1.5rem;">
+    <a href="/teacher/class-{{ student.classRoom.id }}/" 
+        style="color: var(--honey-medium); text-decoration: none; display: inline-block;">
+        <i class="fas fa-arrow-right"></i> بازگشت به کلاس {{ student.classRoom.name }}
+    </a>
+</div>
+
+<div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--honey-light);">
+        <div style="width: 70px; height: 70px; background: var(--honey-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-user" style="font-size: 2.5rem; color: var(--honey-gold);"></i>
+        </div>
+        <div>
+            <h2 style="color: var(--honey-dark); margin: 0;">
+                {{ student.first_name }} {{ student.last_name }}
+            </h2>
+            <p style="color: var(--text-soft); margin: 0.3rem 0 0 0;">
+                <i class="fas fa-school"></i> کلاس: {{ student.classRoom.name }}
+            </p>
+        </div>
+        <div style="margin-right: auto; background: var(--honey-cream); padding: 0.5rem 1rem; border-radius: 20px;">
+            <i class="fas fa-tasks"></i>
+            تعداد تمرین‌ها: {{ submissions_count }}
+        </div>
+    </div>
+
+    {% if submissions %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--honey-cream);">
+                    <tr>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">#</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">عنوان تمرین</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">تاریخ ارسال</th>
+                        <th style="padding: 0.8rem; text-align: center; border-bottom: 2px solid var(--honey-light);">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                        <tr style="border-bottom: 1px solid var(--honey-light); transition: background 0.2s;">
+                            <td style="padding: 0.8rem;">{{ forloop.counter }}</td>
+                            <td style="padding: 0.8rem; font-weight: 500;">{{ submission.assignment.title }}</td>
+                            <td style="padding: 0.8rem; color: var(--text-soft);">
+                                {{ submission.submitted_at|date:"Y/m/d - H:i" }}
+                            </td>
+                            <td style="padding: 0.8rem; text-align: center;">
+                                <a href="/teacher/submission-{{ submission.id }}/" 
+                                   style="background: var(--honey-gold); color: white; padding: 0.3rem 1rem; border-radius: 15px; text-decoration: none; font-size: 0.85rem; transition: all 0.3s ease; display: inline-block;">
+                                    <i class="fas fa-eye"></i> مشاهده جواب
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--text-soft);">
+            <i class="fas fa-inbox" style="font-size: 3rem; color: var(--honey-light);"></i>
+            <p style="margin-top: 1rem; font-size: 1.2rem;">
+                این دانش‌آموز هنوز هیچ تمرینی ارسال نکرده است.
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    tbody tr:hover {
+        background: var(--honey-cream);
+    }
+</style>

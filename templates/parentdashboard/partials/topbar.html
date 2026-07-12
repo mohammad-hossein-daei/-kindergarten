@@ -1,0 +1,39 @@
+{% load static %}
+
+<header class="topbar">
+    <div class="topbar-right">
+        <div class="brand">
+            <img src="{% static 'images/logo.png' %}" alt="کندو" 
+                style="height: 80px; width: 80px; object-fit: cover; border-radius: 16px;">
+        </div>
+    </div>
+
+    <div class="topbar-left">
+        <!-- دکمه اعلانات -->
+        <div class="notification-wrapper">
+            <button class="notification-btn" id="notificationToggle">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge">3</span>
+            </button>
+
+            <!-- پنل اعلانات -->
+            {% include 'parentdashboard/partials/notification_panel.html' %}
+        </div>
+
+        <!-- انتخابگر اکانت فرزند -->
+        <div class="account-switcher">
+            <i class="fas fa-user-graduate"></i>
+            <select id="childAccountSelect">
+                <option value="1">👧 نیلوفر (۳ سال)</option>
+                <option value="2">👦 امیرعلی (۴ سال)</option>
+                <option value="3">👧 سارا (۲ سال)</option>
+                <option value="4" selected>👦 رادین (۵ سال)</option>
+            </select>
+        </div>
+
+        <!-- آواتار والد -->
+        <div class="avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </div>
+</header>

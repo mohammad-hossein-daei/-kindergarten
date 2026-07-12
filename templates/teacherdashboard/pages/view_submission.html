@@ -1,0 +1,107 @@
+<!-- templates/teacherdashboard/pages/view_submission.html -->
+{% load static %}
+
+<div style="margin-bottom: 1.5rem;">
+    <a href="/teacher/student-{{ student.id }}/submissions/" style="color: var(--honey-medium); text-decoration: none; display: inline-block;">
+        <i class="fas fa-arrow-right"></i> بازگشت به تمرین‌های {{ student.first_name }}
+    </a>
+</div>
+
+<div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <!-- هدر -->
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--honey-light);">
+        <div>
+            <h2 style="color: var(--honey-dark); margin: 0;">
+                <i class="fas fa-file-alt"></i>
+                {{ assignment.title }}
+            </h2>
+            <p style="color: var(--text-soft); margin-top: 0.3rem;">
+                <i class="fas fa-user"></i>
+                دانش‌آموز: {{ student.first_name }} {{ student.last_name }}
+            </p>
+            <p style="color: var(--text-soft); margin-top: 0.2rem;">
+                <i class="fas fa-school"></i>
+                کلاس: {{ student.classRoom.name }}
+            </p>
+            <p style="color: var(--text-soft); margin-top: 0.2rem;">
+                <i class="fas fa-clock"></i>
+                تاریخ ارسال: {{ submission.submitted_at|date:"Y/m/d - H:i" }}
+            </p>
+        </div>
+        <div style="background: var(--honey-cream); padding: 0.5rem 1rem; border-radius: 20px;">
+            <span style="color: var(--honey-medium); font-weight: 500;">
+                <i class="fas fa-check-circle"></i> ارسال شده
+            </span>
+        </div>
+    </div>
+
+    <!-- توضیحات تمرین -->
+    <div style="margin-bottom: 2rem;">
+        <h4 style="color: var(--honey-medium); margin-bottom: 0.5rem;">
+            <i class="fas fa-align-left"></i> توضیحات تمرین
+        </h4>
+        <div style="background: var(--honey-cream); padding: 1.5rem; border-radius: 15px; color: var(--text-soft);">
+            {% if assignment.description %}
+                {{ assignment.description|linebreaks }}
+            {% else %}
+                <span style="color: #999;">توضیحی برای این تمرین وارد نشده است.</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- پاسخ دانش‌آموز -->
+    <div style="margin-bottom: 2rem;">
+        <h4 style="color: var(--honey-medium); margin-bottom: 0.5rem;">
+            <i class="fas fa-reply"></i> پاسخ دانش‌آموز
+        </h4>
+        
+        <!-- پاسخ متنی -->
+        {% if submission.text_answer %}
+            <div style="background: var(--honey-cream); padding: 1.5rem; border-radius: 15px; color: var(--text-soft); margin-bottom: 1rem;">
+                {{ submission.text_answer|linebreaks }}
+            </div>
+        {% endif %}
+
+        <!-- فایل ضمیمه -->
+        {% if submission.attachment %}
+            <div style="background: #f0f8ff; padding: 1rem; border-radius: 15px; border: 1px solid #d0e8ff;">
+                <p style="margin: 0; color: var(--text-soft);">
+                    <i class="fas fa-paperclip"></i>
+                    فایل ضمیمه:
+                </p>
+                <a href="{{ submission.attachment.url }}" 
+                   target="_blank"
+                   style="color: var(--honey-gold); text-decoration: none; font-weight: 500; display: inline-block; margin-top: 0.5rem;">
+                    <i class="fas fa-download"></i>
+                    دانلود فایل
+                </a>
+                <span style="color: #999; font-size: 0.8rem; margin-right: 0.5rem;">
+                    ({{ submission.attachment.size|filesizeformat }})
+                </span>
+            </div>
+        {% endif %}
+
+        {% if not submission.text_answer and not submission.attachment %}
+            <div style="background: #fff3cd; padding: 1rem; border-radius: 15px; color: #856404;">
+                <i class="fas fa-exclamation-triangle"></i>
+                این دانش‌آموز پاسخی ارسال نکرده است.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- دکمه بازگشت -->
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <!-- لینک بازگشت -->
+        <a href="/teacher/student-{{ student.id }}/" 
+            style="color: var(--honey-medium); text-decoration: none; display: inline-block;">
+            <i class="fas fa-arrow-right"></i> بازگشت به تمرین‌های {{ student.first_name }}
+        </a>
+    </div>
+</div>
+
+<style>
+    .btn-back:hover {
+        background: var(--honey-dark) !important;
+        transform: scale(1.02);
+    }
+</style>

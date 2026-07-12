@@ -1,0 +1,147 @@
+<!-- templates/teacherdashboard/pages/class_detail.html -->
+{% load static %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <a href="/teacher/assignments/" style="color: var(--honey-medium); text-decoration: none; display: inline-block; margin-bottom: 0.5rem;">
+            <i class="fas fa-arrow-right"></i> بازگشت به مدیریت تکالیف
+        </a>
+        <h2 style="color: var(--honey-medium); margin: 0;">
+            <i class="fas fa-school"></i>
+            کلاس {{ class_obj.name }}
+        </h2>
+        <p style="color: var(--text-soft); margin-top: 0.3rem;">
+            <i class="fas fa-user-tie"></i>
+            مربی: {{ class_obj.Employee.get_full_name|default:class_obj.Employee.email }}
+        </p>
+        <p style="color: var(--text-soft); margin-top: 0.2rem;">
+            <i class="fas fa-users"></i>
+            تعداد دانش‌آموزان: {{ students_count }}
+        </p>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <a href="/teacher/new-assignment-{{ class_obj.pk }}/"
+           class="btn-new-assignment" 
+           style="background: var(--honey-gold); color: white; padding: 0.7rem 1.5rem; border-radius: 20px; text-decoration: none; display: inline-block; font-size: 1rem; border: none; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;">
+            <i class="fas fa-plus"></i> ارسال تمرین جدید
+        </a>
+    </div>
+</div>
+
+<!-- بخش دانش‌آموزان -->
+<div style="background: white; border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <h3 style="color: var(--honey-medium); margin-bottom: 1rem;">
+        <i class="fas fa-user-graduate"></i>
+        لیست دانش‌آموزان
+    </h3>
+    
+    {% if students %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--honey-cream);">
+                    <tr>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">#</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">نام</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">نام خانوادگی</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">والدین</th>
+                        <th style="padding: 0.8rem; text-align: center; border-bottom: 2px solid var(--honey-light);">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr style="border-bottom: 1px solid var(--honey-light); transition: background 0.2s;">
+                            <td style="padding: 0.8rem;">{{ forloop.counter }}</td>
+                            <td style="padding: 0.8rem; font-weight: 500;">{{ student.first_name }}</td>
+                            <td style="padding: 0.8rem; font-weight: 500;">{{ student.last_name }}</td>
+                            <td style="padding: 0.8rem; color: var(--text-soft);">
+                                {{ student.parent.get_full_name|default:student.parent.email }}
+                            </td>
+                            <td style="padding: 0.8rem; text-align: center;">
+                                <a href="/teacher/student-{{ student.pk }}/"
+                                   style="background: var(--honey-gold); color: white; padding: 0.3rem 1rem; border-radius: 15px; text-decoration: none; font-size: 0.85rem; transition: all 0.3s ease; display: inline-block;">
+                                    <i class="fas fa-eye"></i> مشاهده تمرین‌ها
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--text-soft);">
+            <i class="fas fa-users" style="font-size: 2rem; color: var(--honey-light);"></i>
+            <p>این کلاس هنوز دانش‌آموزی ندارد.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- بخش تمرین‌های کلاس -->
+<div style="background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <h3 style="color: var(--honey-medium); margin-bottom: 1rem;">
+        <i class="fas fa-tasks"></i>
+        تمرین‌های ارسال شده
+        <span style="background: var(--honey-cream); padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.8rem; margin-right: 0.5rem;">
+            {{ assignments_count }}
+        </span>
+    </h3>
+    
+    {% if assignments %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--honey-cream);">
+                    <tr>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">#</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">عنوان</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">ددلاین</th>
+                        <th style="padding: 0.8rem; text-align: right; border-bottom: 2px solid var(--honey-light);">پاسخ‌ها</th>
+                        <th style="padding: 0.8rem; text-align: center; border-bottom: 2px solid var(--honey-light);">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignment in assignments %}
+                        <tr style="border-bottom: 1px solid var(--honey-light); transition: background 0.2s;">
+                            <td style="padding: 0.8rem;">{{ forloop.counter }}</td>
+                            <td style="padding: 0.8rem; font-weight: 500;">{{ assignment.title }}</td>
+                            <td style="padding: 0.8rem; color: var(--text-soft);">
+                                {{ assignment.due_date|date:"Y/m/d - H:i" }}
+                                {% if assignment.due_date < now %}
+                                    <span style="color: red; font-size: 0.8rem;">(منقضی)</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.8rem; text-align: center;">
+                                <span style="background: var(--honey-cream); padding: 0.2rem 0.8rem; border-radius: 20px;">
+                                    {{ assignment.submission_count|default:0 }}
+                                </span>
+                            </td>
+                            <td style="padding: 0.8rem; text-align: center;">
+                                <a href="/teacher/class-assignments-{{ class_obj.pk }}/" 
+                                   style="background: var(--honey-gold); color: white; padding: 0.3rem 1rem; border-radius: 15px; text-decoration: none; font-size: 0.85rem; transition: all 0.3s ease; display: inline-block;">
+                                    <i class="fas fa-eye"></i> مشاهده پاسخ‌ها
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--text-soft);">
+            <i class="fas fa-tasks" style="font-size: 2rem; color: var(--honey-light);"></i>
+            <p>هنوز تمرینی برای این کلاس ارسال نشده است.</p>
+            <a href="/teacher/class-{{ class_obj.id }}/new-assignment/" 
+               style="color: var(--honey-gold); text-decoration: none;">
+                <i class="fas fa-plus"></i> اولین تمرین را ارسال کنید
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    tbody tr:hover {
+        background: var(--honey-cream);
+    }
+    .btn-new-assignment:hover {
+        background: var(--honey-dark) !important;
+        transform: scale(1.05);
+    }
+</style>

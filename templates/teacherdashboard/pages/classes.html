@@ -1,0 +1,71 @@
+<!-- templates/teacherdashboard/pages/classes.html -->
+{% load static %}
+
+<div class="classes-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="color: var(--honey-medium);">
+        <i class="fas fa-chalkboard-teacher"></i>
+        کلاس‌های من
+    </h2>
+    <span style="background: var(--honey-cream); padding: 0.5rem 1rem; border-radius: 20px;">
+        <i class="fas fa-school"></i>
+        تعداد کلاس‌ها: {{ classes.count }}
+    </span>
+</div>
+
+{% if classes %}
+    <div class="classes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        {% for class in classes %}
+            <div class="class-card" style="background: var(--honey-cream); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--honey-light); transition: all 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <h3 style="color: var(--honey-dark); margin-bottom: 0.5rem;">
+                            <i class="fas fa-school"></i>
+                            {{ class.name }}
+                        </h3>
+                        <p style="color: var(--text-soft); margin-bottom: 0.3rem;">
+                            <i class="fas fa-users"></i>
+                            ظرفیت: {{ class.Capacity }}
+                        </p>
+                        <p style="color: var(--text-soft); margin-bottom: 0.3rem;">
+                            <i class="fas fa-user-graduate"></i>
+                            تعداد دانش‌آموزان: {{ class.child_set.count }}
+                        </p>
+                        <p style="color: var(--text-soft); margin-bottom: 0.3rem;">
+                            <i class="fas fa-user-tie"></i>
+                            مربی: {{ class.Employee.get_full_name|default:class.Employee.email }}
+                        </p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-right: 1rem;">
+                        <!-- ✅ استفاده از لینک مستقیم به جای url -->
+                        <a href="/teacher/class-{{ class.id }}/" 
+                           class="btn-view-students" 
+                           style="background: var(--honey-gold); color: white; padding: 0.5rem 1.2rem; border-radius: 20px; text-decoration: none; display: inline-block; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;">
+                            <i class="fas fa-eye"></i> مشاهده دانش‌آموزان
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 3rem; background: var(--honey-cream); border-radius: 20px;">
+        <i class="fas fa-chalkboard" style="font-size: 3rem; color: var(--honey-light);"></i>
+        <p style="color: var(--text-soft); margin-top: 1rem; font-size: 1.2rem;">
+            شما هنوز کلاسی ندارید.
+        </p>
+        <p style="color: var(--text-soft); font-size: 0.9rem;">
+            برای ثبت کلاس جدید با مدیریت تماس بگیرید.
+        </p>
+    </div>
+{% endif %}
+
+<style>
+    .class-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(93, 58, 26, 0.15);
+    }
+    .btn-view-students:hover {
+        background: var(--honey-dark) !important;
+        transform: scale(1.05);
+    }
+</style>

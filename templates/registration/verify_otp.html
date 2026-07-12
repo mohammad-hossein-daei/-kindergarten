@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تأیید کد</title>
+    <style>
+        body { font-family: Tahoma; max-width: 400px; margin: 50px auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; letter-spacing: 5px; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { background: #e7f3ff; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h2>🔐 تأیید کد</h2>
+    
+    <div class="info">
+        کد تأیید به ایمیل <strong>{{ email }}</strong> ارسال شد.
+        لطفاً کد ۶ رقمی را وارد کنید.
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.otp_code.id_for_label }}">{{ form.otp_code.label }}</label>
+            {{ form.otp_code }}
+            {% if form.otp_code.errors %}
+                <div class="error">{{ form.otp_code.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit">تأیید</button>
+    </form>
+    
+    <form method="post" action="{% url 'resend_otp' %}" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit" style="background: #6c757d;">ارسال مجدد کد</button>
+    </form>
+</body>
+</html>

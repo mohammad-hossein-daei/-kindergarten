@@ -1,0 +1,23 @@
+{% extends 'parentdashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block page_content %}
+<div class="content-placeholder">
+    <i class="fas fa-child" style="font-size: 4rem; color: var(--honey-gold); margin-bottom: 16px;"></i>
+    <h3>👶 فرزندان</h3>
+    <p>لیست فرزندان و اطلاعات مربوط به هر کدام</p>
+    
+    <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+        <div style="background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 12px var(--shadow); width: 200px;">
+            <h4>👧 نیلوفر</h4>
+            <p>سن: ۳ سال</p>
+            <p>کلاس: نونهالان</p>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 12px var(--shadow); width: 200px;">
+            <h4>👦 رادین</h4>
+            <p>سن: ۵ سال</p>
+            <p>کلاس: پیش‌دبستانی</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

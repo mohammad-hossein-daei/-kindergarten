@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "main",
 ]
 
 MIDDLEWARE = [
@@ -49,15 +50,18 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+AUTH_USER_MODEL = 'main.CustomUser'
+
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                'django.template.context_processors.debug', 
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -116,7 +120,47 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+UTH_USER_MODEL = 'main.CustomUser'  
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_URL = '/main:login/'  
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 86400  
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "m.hosein.daei82@gmail.com"
+EMAIL_HOST_PASSWORD = "lngl jjjs ivhv kjtm"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+OTP_EXPIRE_MINUTES = 2
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static',]
+
+
+
+
+# ===== تنظیمات درگاه زرین‌پال =====
+# محیط تست (True) یا تولید (False)
+ZARINPAL_SANDBOX = True
+
+# مرچنت کد - در Sandbox هر ۳۶ کاراکتر دلخواه
+ZARINPAL_MERCHANT_ID = "123456789012345678901234567890123456"
+
+# آدرس‌های درگاه (بر اساس محیط)
+if ZARINPAL_SANDBOX:
+    ZARINPAL_REQUEST_URL = "https://sandbox.zarinpal.com/pg/v4/payment/request.json"
+    ZARINPAL_VERIFY_URL = "https://sandbox.zarinpal.com/pg/v4/payment/verify.json"
+    ZARINPAL_GATEWAY_URL = "https://sandbox.zarinpal.com/pg/StartPay/"
+else:
+    ZARINPAL_REQUEST_URL = "https://api.zarinpal.com/pg/v4/payment/request.json"
+    ZARINPAL_VERIFY_URL = "https://api.zarinpal.com/pg/v4/payment/verify.json"
+    ZARINPAL_GATEWAY_URL = "https://www.zarinpal.com/pg/StartPay/"

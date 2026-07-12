@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+    <!-- نوار بالایی -->
+    
+
+    <!-- بدنه اصلی -->
+    <div class="main-wrapper">
+        <!-- نوار کناری -->
+        
+        <!-- محتوای اصلی -->
+        <main class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <!-- نمایش پیام‌ها -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}times-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="card shadow-lg border-0">
+                            <div class="card-header bg-gradient-primary text-white py-3">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    ثبت‌نام فرزند جدید
+                                </h5>
+                                <small class="text-light opacity-75">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    لطفاً اطلاعات را کامل وارد کنید
+                                </small>
+                            </div>
+                            
+                            <div class="card-body p-4">
+                                <form method="post" action="{% url 'main:register_child_process' %}" id="registerChildForm">
+                                    {% csrf_token %}
+                                    
+                                    {% if form %}
+                                        <!-- ===== بخش اطلاعات کودک ===== -->
+                                        <div class="section-header">
+                                            <i class="fas fa-child text-primary"></i>
+                                            <span>اطلاعات کودک</span>
+                                            <hr>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">
+                                                    نام <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </span>
+                                                    {{ form.first_name }}
+                                                </div>
+                                                {% if form.first_name.errors %}
+                                                    <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">
+                                                    نام خانوادگی <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light">
+                                                        <i class="fas fa-user-tag text-muted"></i>
+                                                    </span>
+                                                    {{ form.last_name }}
+                                                </div>
+                                                {% if form.last_name.errors %}
+                                                    <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.birth_date.id_for_label }}" class="form-label fw-bold">
+                                                    <i class="fas fa-calendar-alt me-1"></i>
+                                                    تاریخ تولد
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light">
+                                                        <i class="fas fa-calendar-day text-muted"></i>
+                                                    </span>
+                                                    {{ form.birth_date }}
+                                                </div>
+                                                <small class="text-muted">برای تعیین کلاس مناسب توسط ادمین</small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <div class="alert alert-secondary mb-0">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    <strong>نکته:</strong>
+                                                    <br>
+                                                    <small>کلاس فرزند شما پس از تایید ادمین تعیین خواهد شد</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="{{ form.medical_note.id_for_label }}" class="form-label fw-bold">
+                                                <i class="fas fa-notes-medical me-1"></i>
+                                                نکات پزشکی
+                                            </label>
+                                            {{ form.medical_note }}
+                                            {% if form.medical_note.errors %}
+                                                <div class="text-danger small">{{ form.medical_note.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- ===== بخش پرداخت ===== -->
+                                        <div class="section-header mt-4">
+                                            <i class="fas fa-credit-card text-primary"></i>
+                                            <span>اطلاعات پرداخت</span>
+                                            <hr>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold">
+                                                    <i class="fas fa-money-bill-wave me-1"></i>
+                                                    مبلغ (تومان)
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light">
+                                                        <i class="fas fa-toman text-muted"></i>
+                                                    </span>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           value="۱,۰۰۰ تومان" 
+                                                           disabled
+                                                           style="background-color: #f8f9fa;">
+                                                </div>
+                                                <small class="text-muted">مبلغ ثابت ثبت‌نام</small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold">
+                                                    <i class="fas fa-shield-alt me-1"></i>
+                                                    وضعیت پرداخت
+                                                </label>
+                                                <div class="alert alert-info mb-0">
+                                                    <i class="fas fa-flask me-2"></i>
+                                                    <strong>محیط تست (Sandbox)</strong>
+                                                    <br>
+                                                    <small>پرداخت آزمایشی - هیچ مبلغی کسر نمی‌شود</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- ===== دکمه ثبت ===== -->
+                                        <div class="d-grid gap-2 mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                                <i class="fas fa-credit-card me-2"></i>
+                                                ثبت‌نام و پرداخت
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- ===== اطلاعات امنیتی ===== -->
+                                        <div class="mt-3 text-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-lock me-1"></i>
+                                                اطلاعات شما محفوظ است
+                                                <span class="mx-2">|</span>
+                                                <i class="fas fa-shield-alt me-1"></i>
+                                                درگاه امن زرین‌پال
+                                                <span class="mx-2">|</span>
+                                                <i class="fas fa-check-circle me-1 text-success"></i>
+                                                تست رایگان
+                                            </small>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-danger">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            ❌ فرم یافت نشد! لطفاً با پشتیبانی تماس بگیرید.
+                                        </div>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registerChildForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (form && submitBtn) {
+            form.addEventListener('submit', function(e) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">در حال پردازش...</span>
+                    </div>
+                    در حال اتصال به درگاه پرداخت...
+                `;
+            });
+        }
+    });
+</script>
+{% endblock %}

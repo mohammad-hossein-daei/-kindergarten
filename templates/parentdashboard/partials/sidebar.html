@@ -1,0 +1,36 @@
+<nav class="sidebar">
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'main:parentdashboard' %}" class="{% if active_page == 'home' %}active{% endif %}">
+            <i class="fas fa-home"></i> پیشخوان
+        </a></li>
+        <li><a href="{% url 'main:dashboard_page' 'children' %}" class="{% if active_page == 'children' %}active{% endif %}">
+            <i class="fas fa-child"></i> فرزندان
+        </a></li>
+        <li><a href="{% url 'main:dashboard_page' 'enrollments' %}" class="{% if active_page == 'enrollments' %}active{% endif %}">
+            <i class="fas fa-calendar-check"></i> ثبت‌نام‌ها
+        </a></li>
+        <li><a href="{% url 'main:dashboard_page' 'classes' %}" class="{% if active_page == 'classes' %}active{% endif %}">
+            <i class="fas fa-chalkboard-teacher"></i> کلاس‌ها
+        </a></li>
+        <li><a href="{% url 'main:dashboard_page' 'reports' %}" class="{% if active_page == 'reports' %}active{% endif %}">
+            <i class="fas fa-chart-pie"></i> گزارش‌ها
+        </a></li>
+        <li><a href="{% url 'main:dashboard_page' 'payments' %}" class="{% if active_page == 'payments' %}active{% endif %}">
+            <i class="fas fa-credit-card"></i> پرداخت‌ها
+        </a></li>
+        <li><a href="{% url 'main:dashboard_page' 'settings' %}" class="{% if active_page == 'settings' %}active{% endif %}">
+            <i class="fas fa-cog"></i> تنظیمات
+        </a></li>
+    </ul>
+
+    <hr class="sidebar-divider" />
+
+    <ul class="sidebar-menu">
+        <li><a href="#"><i class="fas fa-question-circle"></i> راهنما</a></li>
+        <li><a href="{% url 'main:logout' %}"><i class="fas fa-sign-out-alt"></i> خروج</a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <i class="fas fa-seedling"></i> مهدکودک کندو • نسخه ۱.۰
+    </div>
+</nav>
