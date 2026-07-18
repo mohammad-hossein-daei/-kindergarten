@@ -7,7 +7,6 @@ from datetime import timedelta
 import random
 import string
 
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -36,7 +35,6 @@ class CustomUserManager(BaseUserManager):
         
         return self.create_user(email, password, **extra_fields)
 
-
 class CustomUser(AbstractUser, PermissionsMixin):
     username = None
     
@@ -64,7 +62,6 @@ class CustomUser(AbstractUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-
 class Parent(CustomUser):
     class Meta:
         db_table = 'parent'
@@ -73,7 +70,6 @@ class Parent(CustomUser):
     
     def __str__(self):
         return self.email
-
 
 class Employee(CustomUser):
     ROLE_CHOICES = (
@@ -90,7 +86,6 @@ class Employee(CustomUser):
     def __str__(self):
         return f"{self.email} - {self.get_role_display()}"
 
-
 class ClassRoom(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     Capacity = models.PositiveSmallIntegerField(blank=False, null=False)
@@ -98,7 +93,6 @@ class ClassRoom(models.Model):
     
     def __str__(self):
         return f"{self.name} ظرفیت:{self.Capacity}"
-
 
 class Child(models.Model):
     first_name = models.CharField(max_length=50)
@@ -111,8 +105,6 @@ class Child(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
-# در models.py
 class Payment(models.Model):
     PAYMENT_STATUS = (
         ('pending', 'در انتظار'),
@@ -137,7 +129,6 @@ def file_size_validator(value):
     if value.size > max_size:
         raise ValidationError(f"حداکثر حجم فایل {max_size//(1024*1024)} مگابایت است.")
 
-
 class Assignment(models.Model):
     title = models.CharField(max_length=200, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
@@ -158,7 +149,6 @@ class Assignment(models.Model):
     def __str__(self):
         class_name = self.class_room.name if self.class_room else "بدون کلاس"
         return f"{self.title} - {self.due_date} - {class_name}"
-
 
 class Submission(models.Model):
     attachment = models.FileField(
@@ -189,7 +179,6 @@ class Submission(models.Model):
         assignment_title = self.assignment.title if self.assignment else "بدون تکلیف"
         return f"{self.child} - {assignment_title} - {self.submitted_at}"
 
-
 class CounselingBooking(models.Model):
     REGISTRATION_STATUS = (
         ('pending', 'انتظار'),
@@ -212,7 +201,6 @@ class CounselingBooking(models.Model):
     def __str__(self):
         return f"{self.child} - {self.counselor} - {self.date} {self.time} - {self.status}"
 
-
 class Announcement(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
@@ -229,7 +217,6 @@ class Announcement(models.Model):
     def __str__(self):
         return f"{self.title} - {self.announcement_date.strftime('%Y/%m/%d')}"
 
-
 class EventRegistration(models.Model):
     REGISTRATION_STATUS = (
         ('pending', 'انتظار'),
@@ -243,7 +230,6 @@ class EventRegistration(models.Model):
 
     def __str__(self):
         return f"{self.child} - {self.announcement.title} - {self.get_status_display()}"
-
 
 class WeeklyMenu(models.Model):
     class MealType(models.TextChoices):
@@ -275,7 +261,6 @@ class WeeklyMenu(models.Model):
     
     def __str__(self):
         return f"{self.class_room} - {self.date} - {self.get_meal_type_display()}"
-
 
 class WeeklyActivity(models.Model):
     class DayOfWeek(models.TextChoices):
@@ -334,8 +319,6 @@ class WeeklyActivity(models.Model):
         }
         return days.get(self.day_of_week, -1)
 
-
-# ========== EmailOTP (فقط یک بار تعریف شود) ==========
 class EmailOTP(models.Model):
     email = models.EmailField()
     otp_code = models.CharField(max_length=6)

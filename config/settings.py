@@ -142,6 +142,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
 ]
 
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static',]
 
@@ -164,3 +169,4 @@ else:
     ZARINPAL_REQUEST_URL = "https://api.zarinpal.com/pg/v4/payment/request.json"
     ZARINPAL_VERIFY_URL = "https://api.zarinpal.com/pg/v4/payment/verify.json"
     ZARINPAL_GATEWAY_URL = "https://www.zarinpal.com/pg/StartPay/"
+    

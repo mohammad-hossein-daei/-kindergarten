@@ -1,178 +1,193 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ورود به کندو</title>
     <style>
-        :root {
-            --honey-dark: #5D3A1A;
-            --honey-medium: #8B5E3C;
-            --honey-gold: #F5A623;
-            --honey-light: #FDEBD0;
-            --honey-drip: #FFB74D;
-            --honey-cream: #ffefd0;
-            --honey-warm: #FFF3E0;
-            --text-dark: #3E2723;
-            --text-soft: #5D4037;
-            --white: #fff5e7;
-            --shadow: rgba(93, 58, 26, 0.2);
+      :root {
+        --honey-dark: #5d3a1a;
+        --honey-medium: #8b5e3c;
+        --honey-gold: #f5a623;
+        --honey-light: #fdebd0;
+        --honey-drip: #ffb74d;
+        --honey-cream: #ffefd0;
+        --honey-warm: #fff3e0;
+        --text-dark: #3e2723;
+        --text-soft: #5d4037;
+        --white: #fff5e7;
+        --shadow: rgba(93, 58, 26, 0.2);
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--honey-cream);
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        padding: 1rem;
+      }
+      .card {
+        max-width: 500px;
+        width: 150%;
+        background: var(--white);
+        padding: 1.5rem 2rem;
+        padding-top: 0px;
+        border-radius: 40px;
+        box-shadow: 0 20px 40px var(--shadow);
+        border: 1px solid var(--honey-light);
+      }
+      h1 {
+        text-align: center;
+        color: var(--honey-medium);
+        font-weight: 300;
+        font-size: 2rem;
+      }
+      .sub {
+        text-align: center;
+        color: var(--text-soft);
+        margin-bottom: 1.5rem;
+        border-bottom: 1px dashed var(--honey-light);
+        padding-bottom: 0.8rem;
+      }
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      .form-group label {
+        display: block;
+        color: var(--text-soft);
+        font-weight: 500;
+        margin-bottom: 0.2rem;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border: 1px solid var(--honey-light);
+        border-radius: 60px;
+        outline: none;
+        font-size: 0.95rem;
+        background: var(--honey-cream);
+      }
+      .form-group input:focus {
+        border-color: var(--honey-gold);
+        box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
+      }
+      .btn-primary {
+        width: 100%;
+        background: var(--honey-gold);
+        border: none;
+        padding: 0.8rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #5f4033;
+        cursor: pointer;
+        border: 1px solid #f1d9d1;
+        box-shadow: 0 4px 8px #edd9d1;
+        transition: 0.2s;
+      }
+      .btn-primary:hover {
+        background: #e08b3c;
+      }
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .logo-center {
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      .logo-center img {
+        height: 150px;
+        display: block;
+        margin: 0 auto;
+        margin: 0 auto 2px auto;
+      }
+      .message {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        text-align: center;
+        min-height: 1.5rem;
+      }
+      .message.error {
+        color: #d9534f;
+      }
+      .message.success {
+        color: #5cb85c;
+      }
+      .register-link {
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--text-soft);
+      }
+      .register-link a {
+        color: var(--honey-gold);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .register-link a:hover {
+        color: var(--honey-dark);
+        text-decoration: underline;
+      }
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--honey-gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+        vertical-align: middle;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--honey-cream);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            padding: 1rem;
+        100% {
+          transform: rotate(360deg);
         }
-        .card {
-            max-width: 500px;
-            width: 150%;
-            background: var(--white);
-            padding: 1.5rem 2rem;
-            padding-top: 0px;
-            border-radius: 40px;
-            box-shadow: 0 20px 40px var(--shadow);
-            border: 1px solid var(--honey-light);
-        }
-        h1 {
-            text-align: center;
-            color: var(--honey-medium);
-            font-weight: 300;
-            font-size: 2rem;
-        }
-        .sub {
-            text-align: center;
-            color: var(--text-soft);
-            margin-bottom: 1.5rem;
-            border-bottom: 1px dashed var(--honey-light);
-            padding-bottom: 0.8rem;
-        }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label {
-            display: block;
-            color: var(--text-soft);
-            font-weight: 500;
-            margin-bottom: 0.2rem;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border: 1px solid var(--honey-light);
-            border-radius: 60px;
-            outline: none;
-            font-size: 0.95rem;
-            background: var(--honey-cream);
-        }
-        .form-group input:focus {
-            border-color: var(--honey-gold);
-            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
-        }
-        .btn-primary {
-            width: 100%;
-            background: var(--honey-gold);
-            border: none;
-            padding: 0.8rem;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #5f4033;
-            cursor: pointer;
-            border: 1px solid #f1d9d1;
-            box-shadow: 0 4px 8px #edd9d1;
-            transition: 0.2s;
-        }
-        .btn-primary:hover { 
-            background: #e08b3c; 
-        }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .logo-center {
-          text-align: center;
-          margin: 0;
-          padding: 0;
-        }
-        .logo-center img {
-          height: 150px;
-          display: block;
-          margin: 0 auto;
-          margin: 0 auto 2px auto;
-        }
-        .message {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-            text-align: center;
-            min-height: 1.5rem;
-        }
-        .message.error { color: #d9534f; }
-        .message.success { color: #5cb85c; }
-        .register-link {
-            text-align: center;
-            margin-top: 1rem;
-            color: var(--text-soft);
-        }
-        .register-link a {
-            color: var(--honey-gold);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .register-link a:hover { 
-            color: var(--honey-dark);
-            text-decoration: underline; 
-        }
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--honey-gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+      }
     </style>
-</head>
-<body>
-
-<div class="card">
-    <div class="logo-center">
-        <img src="{% static 'images/logo.png' %}" alt="کندو">
-    </div>
-    <div class="sub">ورود به حساب کاربری</div>
-    <form method="post" action="{% url 'main:login' %}">
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo-center">
+        <img src="{% static 'images/logo.png' %}" alt="کندو" />
+      </div>
+      <div class="sub">ورود به حساب کاربری</div>
+      <form method="post" action="{% url 'main:login' %}">
         {% csrf_token %}
         <div class="form-group">
-            <label>ایمیل</label>
-            <input type="email" id="loginEmail" name="email" placeholder="example@mail.com" required>
+          <label>ایمیل</label>
+          <input type="email" id="loginEmail" name="email" placeholder="example@mail.com" required />
         </div>
         <div class="form-group">
-            <label>رمز عبور</label>
-            <input type="password" id="loginPassword" name="password" placeholder="رمز عبور" required>
+          <label>رمز عبور</label>
+          <input type="password" id="loginPassword" name="password" placeholder="رمز عبور" required />
         </div>
         <button type="submit" class="btn-primary">ورود</button>
-    </form>
+      </form>
 
-    {% if messages %}
+      {% if messages %}
         {% for message in messages %}
-            <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
-                {{ message }}
-            </div>
+          {% if message.tags == 'error' %}
+            <div class="message error">{{ message }}</div>
+          {% endif %}
         {% endfor %}
-    {% endif %}
+      {% endif %}
 
-    <div class="register-link">
+      <div class="register-link">
         حساب کاربری ندارید؟ <a href="{% url 'main:register' %}">ثبت‌نام کنید</a>
+      </div>
     </div>
-</div>
-
-</body>
+  </body>
 </html>

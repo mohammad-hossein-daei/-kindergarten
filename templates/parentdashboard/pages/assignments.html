@@ -1,0 +1,171 @@
+<!-- templates/parentdashboard/pages/assignments.html -->
+{% load static %}
+
+<div style="margin-bottom: 2rem;">
+    <h2 style="color: var(--honey-medium); margin: 0;">
+        <i class="fas fa-tasks"></i>
+        تمرین‌های فرزندان
+    </h2>
+    <p style="color: var(--text-soft); margin-top: 0.3rem;">
+        تمرین‌های ارسال شده توسط مربیان را مشاهده و پاسخ دهید
+    </p>
+</div>
+
+{% if assignments_list %}
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+        {% for item in assignments_list %}
+            <div class="assignment-item" style="background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--honey-light);">
+                
+                <!-- هدر سوال (قابل کلیک برای باز/بسته شدن) -->
+                <div class="assignment-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleAssignment('assignment-{{ forloop.counter }}')">
+                    <div>
+                        <h3 style="color: var(--honey-dark); margin: 0;">
+                            <i class="fas fa-file-alt"></i>
+                            {{ item.assignment.title }}
+                        </h3>
+                        <p style="color: var(--text-soft); font-size: 0.9rem; margin: 0.3rem 0 0 0;">
+                            <i class="fas fa-user"></i>
+                            فرزند: {{ item.child.first_name }} {{ item.child.last_name }}
+                            |
+                            <i class="fas fa-clock"></i>
+                            ددلاین: {{ item.assignment.due_date|date:"Y/m/d - H:i" }}
+                            {% if item.assignment.due_date < now %}
+                                <span style="color: red;">(منقضی)</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        {% if item.submitted %}
+                            <span style="background: green; color: white; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem;">
+                                <i class="fas fa-check"></i> پاسخ داده شده
+                            </span>
+                        {% else %}
+                            <span style="background: #ff9800; color: white; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem;">
+                                <i class="fas fa-hourglass-half"></i> در انتظار پاسخ
+                            </span>
+                        {% endif %}
+                        <i class="fas fa-chevron-down" style="color: var(--honey-gold); font-size: 1.2rem; transition: transform 0.3s;"></i>
+                    </div>
+                </div>
+
+                <!-- محتوای کشویی -->
+                <div id="assignment-{{ forloop.counter }}" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--honey-light);">
+                    
+                    <!-- دکمه‌های عملیات -->
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <!-- دکمه جزئیات سوال -->
+                        <button onclick="toggleDetails('details-{{ forloop.counter }}')" 
+                                style="background: var(--honey-cream); color: var(--honey-medium); padding: 0.5rem 1.5rem; border: 1px solid var(--honey-light); border-radius: 20px; cursor: pointer; transition: all 0.3s ease;">
+                            <i class="fas fa-info-circle"></i> جزئیات سوال
+                        </button>
+                        
+                        <!-- دکمه ارسال پاسخ -->
+                        {% if item.submitted %}
+                            <a href="{% url 'main:parent_view_submission' item.submission.id %}" 
+                               style="background: var(--honey-gold); color: white; padding: 0.5rem 1.5rem; border-radius: 20px; text-decoration: none; display: inline-block;">
+                                <i class="fas fa-eye"></i> مشاهده پاسخ
+                            </a>
+                        {% else %}
+                            {% if item.assignment.due_date < now %}
+                                <span style="background: #999; color: white; padding: 0.5rem 1.5rem; border-radius: 20px; cursor: not-allowed;">
+                                    <i class="fas fa-lock"></i> زمان گذشته
+                                </span>
+                            {% else %}
+                                <a href="{% url 'main:parent_submit_assignment' item.assignment.id item.child.id %}" 
+                                   style="background: var(--honey-gold); color: white; padding: 0.5rem 1.5rem; border-radius: 20px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                                    <i class="fas fa-paper-plane"></i> ارسال پاسخ
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <!-- جزئیات سوال (قابل باز/بسته شدن) -->
+                    <div id="details-{{ forloop.counter }}" style="display: none; background: var(--honey-cream); padding: 1.5rem; border-radius: 15px; margin-top: 1rem;">
+                        <h4 style="color: var(--honey-medium); margin-bottom: 0.5rem;">
+                            <i class="fas fa-align-left"></i> توضیحات سوال
+                        </h4>
+                        {% if item.assignment.description %}
+                            <p style="color: var(--text-soft); line-height: 1.8;">
+                                {{ item.assignment.description|linebreaks }}
+                            </p>
+                        {% else %}
+                            <p style="color: #999;">توضیحی برای این سوال وارد نشده است.</p>
+                        {% endif %}
+
+                        {% if item.assignment.attachment %}
+                            <div style="margin-top: 1rem; padding: 0.8rem; background: white; border-radius: 10px; border: 1px solid var(--honey-light);">
+                                <p style="margin: 0; color: var(--text-soft);">
+                                    <i class="fas fa-paperclip"></i>
+                                    فایل ضمیمه:
+                                </p>
+                                <a href="{{ item.assignment.attachment.url }}" 
+                                   target="_blank"
+                                   style="color: var(--honey-gold); text-decoration: none; font-weight: 500;">
+                                    <i class="fas fa-download"></i>
+                                    دانلود فایل
+                                </a>
+                                <span style="color: #999; font-size: 0.8rem; margin-right: 0.5rem;">
+                                    ({{ item.assignment.attachment.size|filesizeformat }})
+                                </span>
+                            </div>
+                        {% endif %}
+                        
+                        <p style="color: var(--text-soft); font-size: 0.85rem; margin-top: 1rem;">
+                            <i class="fas fa-user-tie"></i>
+                            مربی: {{ item.assignment.teacher.get_full_name|default:item.assignment.teacher.email }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 3rem; background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <i class="fas fa-inbox" style="font-size: 3rem; color: var(--honey-light);"></i>
+        <p style="color: var(--text-soft); margin-top: 1rem; font-size: 1.2rem;">
+            هیچ تمرینی برای فرزندان شما ارسال نشده است.
+        </p>
+    </div>
+{% endif %}
+
+<script>
+    // تابع برای باز/بسته کردن محتوای کشویی (Accordion)
+    function toggleAssignment(id) {
+        var element = document.getElementById(id);
+        var chevron = element.parentElement.querySelector('.fa-chevron-down');
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+        } else {
+            element.style.display = 'none';
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // تابع برای باز/بسته کردن جزئیات سوال
+    function toggleDetails(id) {
+        var element = document.getElementById(id);
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+<style>
+    .assignment-item:hover {
+        box-shadow: 0 8px 20px rgba(93, 58, 26, 0.15);
+        transition: all 0.3s ease;
+    }
+    .assignment-header:hover .fa-chevron-down {
+        color: var(--honey-dark);
+    }
+    .btn-submit:hover {
+        background: var(--honey-dark) !important;
+        transform: scale(1.02);
+    }
+    .btn-details:hover {
+        background: var(--honey-light) !important;
+    }
+</style>

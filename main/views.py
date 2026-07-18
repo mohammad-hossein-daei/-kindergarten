@@ -17,7 +17,7 @@ import requests
 from django.db import transaction
 from .forms import ChildRegistrationForm, AssignmentForm, SubmissionForm
 from django.core.exceptions import PermissionDenied
-
+from django.contrib.messages import get_messages
 
 User = get_user_model()
 def send_otp_email(email, otp_code):
@@ -323,9 +323,91 @@ def login_view(request):
     return render(request, 'registration/login.html')
     
 def logout_view(request):
-    messages.get_messages(request).used = True
+    """
+    خروج از سیستم و پاک کردن پیام‌ها
+    """
+    storage = get_messages(request)
+    for message in storage:
+        pass
+    
     logout(request)
     return redirect('main:login')
+
+# main/views.py - بخش والدین
+
+# ============================================================
+# ===== توابع کمکی برای والدین =====
+# ============================================================
+
+def handle_parent_children(request):
+    """دریافت لیست فرزندان والدین"""
+    try:
+        parent = Parent.objects.get(id=request.user.id)
+        children = Child.objects.filter(parent=parent)
+        return {'children': children}
+    except Parent.DoesNotExist:
+        return {'children': []}
+
+
+def handle_parent_assignments(request):
+    """دریافت لیست تمرین‌های فرزندان"""
+    try:
+        parent = Parent.objects.get(id=request.user.id)
+        children = Child.objects.filter(parent=parent)
+        
+        assignments_list = []
+        for child in children:
+            if child.classRoom:
+                child_assignments = Assignment.objects.filter(
+                    class_room=child.classRoom
+                ).order_by('-due_date')
+                
+                for assignment in child_assignments:
+                    submitted = Submission.objects.filter(
+                        child=child,
+                        assignment=assignment
+                    ).exists()
+                    
+                    assignments_list.append({
+                        'child': child,
+                        'assignment': assignment,
+                        'submitted': submitted,
+                        'submission': Submission.objects.filter(
+                            child=child,
+                            assignment=assignment
+                        ).first() if submitted else None,
+                    })
+        
+        return {
+            'assignments_list': assignments_list,
+            'children': children,
+        }
+    except Parent.DoesNotExist:
+        return {
+            'assignments_list': [],
+            'children': [],
+        }
+
+
+def handle_parent_register_child(request):
+    """فرم ثبت فرزند جدید"""
+    from .forms import ChildRegistrationForm
+    return {'form': ChildRegistrationForm()}
+
+
+def handle_parent_payments(request):
+    """دریافت لیست پرداخت‌ها"""
+    try:
+        parent = Parent.objects.get(id=request.user.id)
+        payments = Payment.objects.filter(child__parent=parent).order_by('-date')
+        return {'payments': payments}
+    except Parent.DoesNotExist:
+        return {'payments': []}
+
+
+# ============================================================
+# ===== ویو اصلی =====
+# ============================================================
 
 @login_required
 def parentdashboard(request, page='home'):
@@ -333,47 +415,55 @@ def parentdashboard(request, page='home'):
     یک ویو برای مدیریت همه صفحات داشبورد والدین
     """
     
-    # ===== تعریف صفحات =====
+    # ===== تعریف صفحات با handler =====
     PAGES = {
         'home': {
             'template': 'parentdashboard/pages/home.html',
             'title': 'پیشخوان',
             'icon': 'fa-home',
+            'handler': None,
         },
         'children': {
             'template': 'parentdashboard/pages/children.html',
             'title': 'فرزندان',
             'icon': 'fa-child',
+            'handler': handle_parent_children,
         },
-        'enrollments': {
-            'template': 'parentdashboard/pages/enrollments.html',
-            'title': 'ثبت‌نام‌ها',
-            'icon': 'fa-calendar-check',
+        'assignments': {
+            'template': 'parentdashboard/pages/assignments.html',
+            'title': 'تمرین‌ها',
+            'icon': 'fa-tasks',
+            'handler': handle_parent_assignments,
         },
         'classes': {
             'template': 'parentdashboard/pages/classes.html',
             'title': 'کلاس‌ها',
             'icon': 'fa-chalkboard-teacher',
+            'handler': None,
         },
         'payments': {
             'template': 'parentdashboard/pages/payments.html',
             'title': 'پرداخت‌ها',
             'icon': 'fa-credit-card',
+            'handler': handle_parent_payments,
         },
         'reports': {
             'template': 'parentdashboard/pages/reports.html',
             'title': 'گزارش‌ها',
             'icon': 'fa-chart-pie',
+            'handler': None,
         },
         'settings': {
             'template': 'parentdashboard/pages/settings.html',
             'title': 'تنظیمات',
             'icon': 'fa-cog',
+            'handler': None,
         },
         'register_child': { 
             'template': 'parentdashboard/pages/register_child.html',
             'title': 'ثبت فرزند جدید',
             'icon': 'fa-user-plus',
+            'handler': handle_parent_register_child,
         },
     }
     
@@ -382,37 +472,22 @@ def parentdashboard(request, page='home'):
         from django.http import Http404
         raise Http404("صفحه مورد نظر یافت نشد")
     
+    page_data = PAGES[page]
+    
     # ===== داده‌های مشترک =====
     context = {
+        'user': request.user,
         'active_page': page,
-        'page_title': PAGES[page]['title'],
-        'page_icon': PAGES[page]['icon'],
-        'page_template': PAGES[page]['template'],  # ✅ این متغیر باید به قالب برود
+        'page_title': page_data['title'],
+        'page_icon': page_data['icon'],
+        'page_template': page_data['template'],
     }
     
-    # ===== داده‌های خاص برای صفحه register_child =====
-    if page == 'register_child':
-        from .forms import ChildRegistrationForm
-        form = ChildRegistrationForm()
-        context['form'] = form  # ✅ اضافه کردن فرم به context
-    
-    # ===== داده‌های خاص برای صفحه children =====
-    elif page == 'children':
-        try:
-            parent = request.user.parent
-            children = Child.objects.filter(parent=parent)
-            context['children'] = children
-        except Parent.DoesNotExist:
-            context['children'] = []
-    
-    # ===== داده‌های خاص برای صفحه payments =====
-    elif page == 'payments':
-        try:
-            parent = request.user.parent
-            payments = Payment.objects.filter(child__parent=parent).order_by('-date')
-            context['payments'] = payments
-        except Parent.DoesNotExist:
-            context['payments'] = []
+    # ===== اجرای handler مخصوص صفحه =====
+    if page_data['handler']:
+        handler_result = page_data['handler'](request)
+        if isinstance(handler_result, dict):
+            context.update(handler_result)
     
     return render(request, 'parentdashboard/dashboard.html', context)
 
@@ -1053,12 +1128,43 @@ def teacherdashboard(request, page='home'):
     
     return render(request, 'teacherdashboard/dashboard.html', context)
     
-# parent_dashboard/views.py (یا همان views.py در بخش والدین)
+
+# main/views.py
+@login_required
+def parent_view_submission(request, submission_id):
+    """
+    مشاهده پاسخ ارسال شده توسط والدین
+    مسیر: /dashboard/submission-{id}/
+    """
+    # دریافت پاسخ
+    submission = get_object_or_404(
+        Submission.objects.select_related('child', 'assignment', 'child__parent'),
+        pk=submission_id
+    )
+    
+    # بررسی اینکه والدین این دانش‌آموز است
+    if submission.child.parent.id != request.user.id:
+        messages.error(request, 'شما دسترسی به این صفحه ندارید')
+        return redirect('main:parentdashboard')
+    
+    context = {
+        'user': request.user,
+        'submission': submission,
+        'child': submission.child,
+        'assignment': submission.assignment,
+        'page_title': f'پاسخ تمرین {submission.assignment.title}',
+        'page_icon': 'fa-file-alt',
+        'page_template': 'parentdashboard/pages/view_submission.html',
+        'active_page': 'assignments',
+    }
+    
+    return render(request, 'parentdashboard/dashboard.html', context)
+
 @login_required
 def parent_submit_assignment(request, assignment_id, child_id):
     """
     ارسال پاسخ تمرین توسط والدین
-    مسیر: /parent/assignment-{assignment_id}/child-{child_id}/submit/
+    مسیر: /dashboard/submit/{assignment_id}/{child_id}/
     """
     # بررسی اینکه فرزند متعلق به این والدین است
     try:
@@ -1089,7 +1195,7 @@ def parent_submit_assignment(request, assignment_id, child_id):
             submission.assignment = assignment
             submission.save()
             messages.success(request, 'پاسخ شما با موفقیت ارسال شد')
-            return redirect('main:parentdashboard')
+            return redirect('main:dashboard_page', page='assignments')
     else:
         form = SubmissionForm()
     
@@ -1098,6 +1204,9 @@ def parent_submit_assignment(request, assignment_id, child_id):
         'assignment': assignment,
         'child': child,
         'form': form,
+        'now': timezone.now(),
         'page_title': f'ارسال پاسخ - {assignment.title}',
+        'page_icon': 'fa-paper-plane',
+        'page_template': 'parentdashboard/pages/submit_assignment.html', 
     }
-    return render(request, 'parentdashboard/pages/submit_assignment.html', context)
+    return render(request, 'parentdashboard/dashboard.html', context)

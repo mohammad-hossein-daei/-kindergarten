@@ -1,0 +1,69 @@
+<!-- templates/parentdashboard/pages/view_submission.html -->
+{% load static %}
+
+<div style="margin-bottom: 1.5rem;">
+    <a href="{% url 'main:dashboard_page' 'assignments' %}" style="color: var(--honey-medium); text-decoration: none; display: inline-block;">
+        <i class="fas fa-arrow-right"></i> بازگشت به تمرین‌ها
+    </a>
+</div>
+
+<div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--honey-light);">
+        <div>
+            <h2 style="color: var(--honey-dark); margin: 0;">
+                <i class="fas fa-file-alt"></i>
+                {{ assignment.title }}
+            </h2>
+            <p style="color: var(--text-soft); margin-top: 0.3rem;">
+                <i class="fas fa-user"></i>
+                دانش‌آموز: {{ child.first_name }} {{ child.last_name }}
+            </p>
+            <p style="color: var(--text-soft); margin-top: 0.2rem;">
+                <i class="fas fa-clock"></i>
+                تاریخ ارسال: {{ submission.submitted_at|date:"Y/m/d - H:i" }}
+            </p>
+        </div>
+        <div style="background: green; padding: 0.5rem 1rem; border-radius: 20px;">
+            <span style="color: white; font-weight: 500;">
+                <i class="fas fa-check-circle"></i> ارسال شده
+            </span>
+        </div>
+    </div>
+
+    {% if submission.text_answer %}
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--honey-medium); margin-bottom: 0.5rem;">
+                <i class="fas fa-reply"></i> پاسخ متنی
+            </h4>
+            <div style="background: var(--honey-cream); padding: 1.5rem; border-radius: 15px; color: var(--text-soft);">
+                {{ submission.text_answer|linebreaks }}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if submission.attachment %}
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--honey-medium); margin-bottom: 0.5rem;">
+                <i class="fas fa-paperclip"></i> فایل ضمیمه
+            </h4>
+            <div style="background: #f0f8ff; padding: 1rem; border-radius: 15px; border: 1px solid #d0e8ff;">
+                <a href="{{ submission.attachment.url }}" 
+                   target="_blank"
+                   style="color: var(--honey-gold); text-decoration: none; font-weight: 500;">
+                    <i class="fas fa-download"></i>
+                    دانلود فایل
+                </a>
+                <span style="color: #999; font-size: 0.8rem; margin-right: 0.5rem;">
+                    ({{ submission.attachment.size|filesizeformat }})
+                </span>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if not submission.text_answer and not submission.attachment %}
+        <div style="background: #fff3cd; padding: 1rem; border-radius: 15px; color: #856404;">
+            <i class="fas fa-exclamation-triangle"></i>
+            این پاسخ فقط فایل بوده یا متنی وارد نشده است.
+        </div>
+    {% endif %}
+</div>
